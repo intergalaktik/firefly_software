@@ -2,9 +2,9 @@
 
 ### Sender
 
-    [x] Using onboard DIP SW to set sender to passtrue data or to send messages alone
+- [x] Using onboard DIP SW to set sender to passtrue data or to send messages alone
     
-    [x] Implementing few test messages on sender
+- [x] Implementing few test messages on sender
     
 ### Receiver    
     
