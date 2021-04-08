@@ -109,9 +109,9 @@ uint8_t patternEnabled = 0;
 
 void loop() {
   // on each loop get device address - that way we can simplycheck device change
-  getModuleAddress();
   checkPattern();
   if(dataReady){
+    getModuleAddress();
     patternEnabled=false;
     checkData();
   }
