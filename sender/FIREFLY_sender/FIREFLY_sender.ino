@@ -27,12 +27,15 @@ uint8_t MODULE_ADDRESS = 0;
 byte customMsg1[] = { HEADER, 0x01, MIN, MAX, MIN, 0x63, 0x00, MIN, FOOTER };
 byte customMsg2[] = { HEADER, 0x02, MIN, MAX, MIN, 0x63, 0x00, MIN, MIN, MIN, FOOTER };
 byte msgAllOff[] = { HEADER, 0x01, MIN, MAX, MIN, 0x63, 0x00, MIN, FOOTER };
+byte keepAliveMsg[] = { HEADER, FOOTER };
 byte setAllLeds[306];
 
 byte doSpecialMsg[] = { HEADER, 0xF0, MIN, MAX, 0x01, FOOTER };
 
 
 bool special = false;
+bool sendKeepAliveMessage = false;
+long keepAliveTimer = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -51,6 +54,7 @@ void setup() {
   Serial.begin(115200);
   Serial1.begin(115200);
   initBlink(); 
+  keepAliveTimer = millis();
 }
 
 void loop() {
@@ -58,9 +62,20 @@ void loop() {
 getModuleAddress();
 
 if (MODULE_ADDRESS == 0) {
-  
+
+  if(keepAliveTimer < (millis() - 800)){
+      sendKeepAliveMessage = true;
+    }
+
+  if(sendKeepAliveMessage){
+    sendKeepAliveMessage = false;
+    Serial.write(keepAliveMsg, sizeof(keepAliveMsg));
+  }
   // put your main code here, to run repeatedly:
   if (Serial1.available()) {      // If anything comes in Serial (USB),
+    // reset keepAlive
+    keepAliveTimer = millis();
+    sendKeepAliveMessage = false;
     Serial.write(Serial1.read());   // read it and send it out Serial1 (pins 0 & 1)
   }
 }
